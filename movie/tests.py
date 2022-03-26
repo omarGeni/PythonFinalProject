@@ -7,7 +7,26 @@ from django.urls import reverse_lazy, reverse
 from .models import Movie, MovieGenre, MovieRating
 
 
+# # Create your tests here.
+class MovieTest(TestCase):
+    def setUp(self):
+        self.type=Movie(Clubname='Friends')
 
+    def test_typestring(self):
+        self.assertEqual(str(self.type), 'Friends')
+
+    def test_tablename(self):
+        self.assertEqual(str(Movie._meta.db_table), 'Movie')        
+
+class MovieRating(TestCase):
+    def setUp(self):
+            self.type=Movie(Clubname='Friends')
+            self.user = User(username="user1")
+            self.event = MovieRating(ratingscale = 'iMBD', user = self.test_user, ratingText='Friends', ratingdate='02/22/2022')
+
+    def test_string(self):
+            self.assertEqual(str(self.event), 'Friends')
+    
 
 class NewMovieForm(TestCase):
     def test_movieform(self):
@@ -20,50 +39,12 @@ class NewMovieForm(TestCase):
         form=MovieForm (data)
         self.assertFalse(form.is_valid )
 
-# # Create your tests here.
-# class ClubTest(TestCase):
-#     def setUp(self):
-#         self.type=Club(Clubname='C#')
+class New_Movie_Authentication_Test(TestCase):
+    def setUp(self):
+        self.test_user = User.objects.create_user(username = 'testuser1', password='P@assword2')
+        self.type=Movie.object.create(typename='Friends')
+        self.event=MovieRating.object.create(ratingscale = 'iMBD', user = self.test_user, ratingText='Friends', ratingdate='02/22/2022') 
 
-#     def test_typestring(self):
-#         self.assertEqual(str(self.type), 'C#')
-
-#     def test_tablename(self):
-#         self.assertEqual(str(Club._meta.db_table), 'Club')        
-
-# class EventTest(TestCase):
-#     def setUp(self):
-#             self.type=Club(Clubname='C#')
-#             self.user = User(username="user1")
-#             self.event = Event(eventTitle = 'C#', eventUserId = self.user, eventDesc='C# Training', eventDate='02/22/2022', eventLocation='Bellevue')
-
-#     def test_string(self):
-#             self.assertEqual(str(self.event), 'C#')
-    
-#     def test_certificate(self):
-#         cert = self.event.eventTitle
-#         self.assertEqual(self.event.certificate(), cert)
-    
-# class NewEventForm(TestCase):
-#     def test_eventform_is_valid(self):
-#         data = {
-#             {'eventtitle':'python', 'eventResource': 'python club', 'eventUserId': 'omurbek', 'eventDate':'2022-3-1', 'eventLocation': 'Seattle', 'eventDesc': 'Intro to python'}
-#             } 
-#         form=EventForm(data)
-#         self.assertTrue(form.is_valid())
-
-#     def test_Eventform_invalid(self):
-#          data = {
-#             {'eventtitle':'python', 'eventResource': 'python club', 'eventUserId': 'omurbek', 'eventDate':'2022-3-1', 'eventLocation': 'Seattle', 'eventDesc': 'Intro to python'}
-#             } 
-#         form=EventForm(data)
-#         self.assertFalse(form.is_valid())
-# class New_Event_Authentication_Test(TestCase):
-#     def setUp(self):
-#         self.test_user = User.objects.create_user(username = 'testuser1', password='P@assword1')
-#         self.type=Type.object.create(typename='python')
-#         self.event=Event.object.create(eventTitle = 'C#', eventUserId = self.test_user, eventDesc='C# Training', eventDate='02/22/2022', eventLocation='Bellevue') 
-
-#     def test_redirect_if_not_logged_in(self):
-#         response=self.client.get(reverse('newevent'))
-#         self.assertRedirects(response, '/account/login/?next=/club/newevent/')   
+    def test_redirect_if_not_logged_in(self):
+        response=self.client.get(reverse('newmovie'))
+        self.assertRedirects(response, '/account/login/?next=/movie/newmovie/')   

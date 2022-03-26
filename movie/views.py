@@ -31,3 +31,24 @@ def newMovie(request):
             form = MovieForm()
         
         return render(request, 'movie/newmovie.html', {'form': form})
+
+@login_required
+def newMovie(request):
+    form=MovieForm
+
+    if request.method=='POST':
+        form=MovieForm(request.POST)
+        if form.is_valid():
+            
+            post=form.save(commit=True)
+            post.save()
+            form=MovieForm()
+    else:
+        form=MovieForm()
+    return render(request, 'reviews/newreview.html', {'form': form})
+
+def logoutmessage(request):
+    return render(request, 'reviews/logoutmessage.html')
+
+def loginmessage(request):
+    return render(request, 'reviews/loginmessage.html')
